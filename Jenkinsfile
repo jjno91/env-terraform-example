@@ -1,5 +1,4 @@
-pipeline
-{
+pipeline {
   agent {
     kubernetes {
       label UUID.randomUUID().toString()
@@ -63,6 +62,9 @@ pipeline
       }
       steps {
         container('terraform') {
+          timeout(time: 5, unit: 'MINUTES') {
+            input message: 'Continuing may change or destroy existing infrastructure, be sure to review the plan stage before continuing'
+          }
           sh 'terraform apply -input=false -auto-approve .tfplan'
         }
       }
